@@ -7,14 +7,20 @@ const path = require('path');
 const fs = require('fs');
 
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
+
+const url = require('url');
+
+const dbUrl = process.env.JAWSDB_URL || 'mysql://io2m4ubltat0x66b:zfzelx9n70e9qr98@i5x1cqhq5xbqtv00.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/mu3m62sk32xa74ck';
+const params = url.parse(dbUrl);
+const [username, password] = params.auth.split(':');
 
 // Configuración de la base de datos
 const db = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'iamodel'
+    host: params.hostname,
+    user: username,
+    password: password,
+    database: params.pathname.split('/')[1]
 });
 
 db.connect((err) => {
