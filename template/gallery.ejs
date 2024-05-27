@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<%- include('head.ejs') %>
+<head>
+    <title>Gallery</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/nanogallery2/3.0.6/css/nanogallery2.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/nanogallery2/3.0.6/jquery.nanogallery2.min.js"></script>
+</head>
+<body>
+    <div class="container text-center marginX">
+        <div class="row">
+            <div class="col">
+                <div id="imagePreview" style="width: 35%; align-items: center; display: inline-block;"></div>
+                <nav style="align-items: center; background-color: rgb(251, 251, 251);">
+                    <div class="container-fluid">
+                        <form id="uploadForm" action="/upload" method="post" enctype="multipart/form-data" class="margin">
+                            <input type="file" id="fileInput" name="file" accept="image/*" required>
+                            <input class="btn btn-primary" type="submit" value="Subir">
+                        </form>
+                    </div>
+                </nav>
+            </div>
+        </div>
+    </div>
+
+    <h3 class="margin" style="text-align: center;">Galería</h3>
+    <% if (images.length > 0) { %>
+        <div class="container text-center">
+            <div class="row row-cols-4">
+                <% images.forEach(image => { %>
+                    <div class="col margin">
+                        <img class="img-fluid" src="<%= image.ruta %>" alt="<%= image.nombre %>">
+                        <!--<form action="">ANALIZAR
+                            <div class="btn-group margin" role="group" aria-label="Basic mixed styles example">
+                                <button class="btn btn-outline-primary" type="submit">Analizar</button>
+                            </div>
+                        </form>-->
+                        <form action="/delete_image/<%= image.idImagen %>" method="post">
+                            <div class="btn-group margin" role="group" aria-label="Basic mixed styles example">
+                                <button class="btn btn-outline-danger" type="submit">Eliminar</button>
+                            </div>
+                        </form>
+                    </div>
+                <% }) %>
+            </div>
+        </div>
+    <% } else { %>
+        <p>No hay imágenes para mostrar.</p>
+    <% } %>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById('fileInput').addEventListener('change', function() {
+                var file = this.files[0];
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(event) {
+                        var imagePreview = document.getElementById('imagePreview');
+                        imagePreview.innerHTML = '';
+                        var img = document.createElement('img');
+                        img.src = event.target.result;
+                        img.style.maxWidth = '100%'; // Ajusta el tamaño de la imagen previa
+                        imagePreview.appendChild(img);
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        });
+
+        
+    </script> 
+</body>
+</html>
